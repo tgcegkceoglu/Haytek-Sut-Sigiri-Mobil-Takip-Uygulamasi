@@ -258,6 +258,7 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
     QuerySnapshot<Map<String, dynamic>> snapshot = await sorgu.get();
     if (snapshot.docs.isNotEmpty) {
       for (DocumentSnapshot<Map<String, dynamic>> dokuman in snapshot.docs) {
+        print("1");
         Map<String, dynamic>? hayvanMap = dokuman.data();
         hayvanMap?["id"] = dokuman.id;
         if (hayvanMap != null) {
@@ -268,12 +269,15 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
               .doc(dokuman.id)
               .collection('hastalik');
           if (sorgu1 != null) {
+             _hayvanIdleri.add(dokuman.id);
             QuerySnapshot<Map<String, dynamic>> snapshot1 = await sorgu1.get();
             if (snapshot1.docs.isNotEmpty) {
               for (DocumentSnapshot<Map<String, dynamic>> dokuman1
                   in snapshot1.docs) {
+                    print(2);
                 Map<String, dynamic>? hastalikMap = dokuman1.data();
                 hastalikMap?["id"] = dokuman1.id;
+              
                 if (hastalikMap != null) {
                   HayvanEkleFirebase hayvan =
                       HayvanEkleFirebase.fromJson(hayvanMap);
