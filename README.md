@@ -1,6 +1,10 @@
 # Haytek-Sut-Sigiri-Mobil-Takip-Uygulamasi
 Lisans Tezi Uygulama Projesi
-![1-min](https://user-images.githubusercontent.com/74832430/170535511-be876067-2c02-4d88-aa27-12507e2601e6.png,height:20)
+<p float="left">
+  <img src="https://user-images.githubusercontent.com/74832430/170535516-f0b14a8a-3663-4ea0-808c-de4df0166911.png" width="100"width="100"/> 
+  <img src="https://user-images.githubusercontent.com/74832430/170535511-be876067-2c02-4d88-aa27-12507e2601e6.png" width="100" />
+</p>
+![1-min](https://user-images.githubusercontent.com/74832430/170535511-be876067-2c02-4d88-aa27-12507e2601e6.png)
 ![2-min](https://user-images.githubusercontent.com/74832430/170535516-f0b14a8a-3663-4ea0-808c-de4df0166911.png)
 ![3-min](https://user-images.githubusercontent.com/74832430/170535537-c3e94a2d-c2f9-4938-94cf-50263c98f316.png)
 ![4-min](https://user-images.githubusercontent.com/74832430/170535544-8c080cb4-afc3-4efe-93d3-ff2acf0764b5.png)
