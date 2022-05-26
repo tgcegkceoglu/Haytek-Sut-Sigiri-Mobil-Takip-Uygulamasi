@@ -3,13 +3,16 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hayvantakipsistemi/Firebase_VeriTabani/hayvanekle/hayvanekle.dart';
 import 'package:hayvantakipsistemi/Firebase_VeriTabani/notlar/hastalik.dart';
 import 'package:hayvantakipsistemi/model/asilamaekle.dart';
 import 'package:hayvantakipsistemi/model/bilgiler.dart';
 import 'package:hayvantakipsistemi/model/hastalikekle.dart';
+import 'package:hayvantakipsistemi/model/hayvanekle.dart';
 import 'package:hayvantakipsistemi/model/header.dart';
 import 'package:hayvantakipsistemi/model/veriler.dart';
+import 'package:hayvantakipsistemi/view/hayvanekle.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -20,8 +23,9 @@ class HastalikSayfasi extends StatefulWidget {
   State<HastalikSayfasi> createState() => _HastalikSayfasiState();
 }
 
+List<HastalikEkleFirebase> _hastalikverileri = [];
+List<HayvanEkleFirebase> _hayvanverileri = [];
 List<String> _hayvanIdleri = [];
-List<String> _hastalikverileri = [];
 FirebaseAuth _auth = FirebaseAuth.instance;
 final _dateFormat = DateFormat('dd/MM/yyyy');
 CalendarFormat _format = CalendarFormat.month;
@@ -35,9 +39,9 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
   @override
   void initState() {
     // TODO: implement initState
-    readTumHayvanlarId();
     readTumHayvanlar();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,50 +140,122 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
                       hintText: "Hastalık Bilgisi Ara"),
                 ),
               ),
-             Expanded(
-               child: ListView.builder(
-                 itemCount:_hastalikverileri.length,
-                 itemBuilder:(context, index) => ListTile(title: Text(_hastalikverileri[index]),),
-               ),
-             )
+              Expanded(
+                child: FutureBuilder(
+                  future: readTumHayvanlar(),
+                  builder: _buildListView,
+                ),
+              )
             ])));
   }
 
-  Future<List<dynamic>> readTumHayvanlarId() async {
-    print("object");
-    Query<Map<String, dynamic>> sorgu = FirebaseFirestore.instance
-        .collection('kullanicilar')
-        .doc(_auth.currentUser!.uid)
-        .collection('hayvanlar');
-
-    QuerySnapshot<Map<String, dynamic>> snapshot = await sorgu.get();
-
-    if (snapshot.docs.isNotEmpty) {
-      for (DocumentSnapshot<Map<String, dynamic>> dokuman in snapshot.docs) {
-        Map<String, dynamic>? hayvanMap = dokuman.data();
-        hayvanMap?["id"] = dokuman.id;
-        if (hayvanMap != null) {
-          HayvanEkleFirebase hayvan = HayvanEkleFirebase.fromJson(hayvanMap);
-          _hayvanIdleri.add(hayvan.hayvanId);
-          print(_hayvanIdleri);
-        }
-      }
-    }
-    return _hayvanIdleri;
+  Widget _buildListView(BuildContext context, AsyncSnapshot<void> snapshot) {
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: _hastalikverileri.length,
+            itemBuilder: _buildListTile,
+          ),
+        ),
+      ],
+    );
   }
 
-  Future<List<dynamic>> readTumHayvanlar({
-  
-    Query<Map<String,dynamic>>? gelenSorgu,
-  }) async {
-    readTumHayvanlarId();
+  Widget _buildListTile(BuildContext context, int index) {
+    return Bilgiler(
+      deger: false,
+      resim: _hayvanverileri[index].resim != null
+          ? _hayvanverileri[index].resim
+          : "https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd",
+      icon: Icon(Icons.sick_rounded, color: Color(0xFF375BA3)),
+      icerik: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  "Küpe Numarası",
+                  style: TextStyle(
+                      color: Color(0xFF375BA3), fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Container(
+                    width: MediaQuery.of(context).size.width / 3,
+                    child: Text(_hastalikverileri[index].hayvaninkupeno)),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  "Hastalik İsmi",
+                  style: TextStyle(
+                      color: Color(0xFF375BA3), fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(_hastalikverileri[index].hastalikismi),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  "Hastalık Başlangıç Tarihi",
+                  style: TextStyle(
+                      color: Color(0xFF375BA3), fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(_hastalikverileri[index].hastalikbaslangic.toString()),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  "Hastalık Bitiş Tarihi",
+                  style: TextStyle(
+                      color: Color(0xFF375BA3), fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(_hastalikverileri[index].hastalikbitis.toString()),
+              ],
+            ),
+            _hastalikverileri[index] != null
+                ? Row(
+                    children: [
+                      Text(
+                        "Not",
+                        style: TextStyle(
+                            color: Color(0xFF375BA3),
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(_hastalikverileri[index].hastaliknot),
+                    ],
+                  )
+                : Container(),
+          ],
+        ),
+      ),
+    );
+  }
+  Future<List<dynamic>> readTumHayvanlar() async {
     Query<Map<String, dynamic>> sorgu = FirebaseFirestore.instance
         .collection('kullanicilar')
         .doc(_auth.currentUser!.uid)
         .collection('hayvanlar');
-
     QuerySnapshot<Map<String, dynamic>> snapshot = await sorgu.get();
-
     if (snapshot.docs.isNotEmpty) {
       for (DocumentSnapshot<Map<String, dynamic>> dokuman in snapshot.docs) {
         Map<String, dynamic>? hayvanMap = dokuman.data();
@@ -191,19 +267,24 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
               .collection('hayvanlar')
               .doc(dokuman.id)
               .collection('hastalik');
-          QuerySnapshot<Map<String, dynamic>> snapshot1 = await sorgu1.get();
-          if (snapshot1.docs.isNotEmpty) {
-            for (DocumentSnapshot<Map<String, dynamic>> dokuman1
-                in snapshot1.docs) {
-              Map<String, dynamic>? hastalikMap = dokuman1.data();
-              hastalikMap?["id"] = dokuman1.id;
-              if (hastalikMap != null) {
-                HastalikEkleFirebase hastalik =
-                    HastalikEkleFirebase.fromJson(hastalikMap);
-                _hastalikverileri.add(hastalik.hastalikismi);
+          if (sorgu1 != null) {
+            QuerySnapshot<Map<String, dynamic>> snapshot1 = await sorgu1.get();
+            if (snapshot1.docs.isNotEmpty) {
+              for (DocumentSnapshot<Map<String, dynamic>> dokuman1
+                  in snapshot1.docs) {
+                Map<String, dynamic>? hastalikMap = dokuman1.data();
+                hastalikMap?["id"] = dokuman1.id;
+                if (hastalikMap != null) {
+                  HayvanEkleFirebase hayvan =
+                      HayvanEkleFirebase.fromJson(hayvanMap);
+                  _hayvanverileri.add(hayvan);
+                  HastalikEkleFirebase hastalik =
+                      HastalikEkleFirebase.fromJson(hastalikMap);
+                  _hastalikverileri.add(hastalik);
+                }
               }
             }
-          } 
+          }
         }
       }
     }

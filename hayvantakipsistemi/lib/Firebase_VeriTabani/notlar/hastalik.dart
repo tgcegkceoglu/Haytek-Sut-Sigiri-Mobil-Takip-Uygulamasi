@@ -24,7 +24,7 @@ class HastalikEkleFirebase {
         'hastalikId':hastalikId,
         'hastaliknot':hastaliknot,
         'hayvaninkupeno': hayvaninkupeno,
-        'hastalikismii':hastalikismi,
+        'hastalikismi':hastalikismi,
         'hastalikbaslangic': hastalikbaslangic,
         'hastalikbitis': hastalikbitis,
       };

@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) =>HastalikSayfasi(),
+        '/': (context) =>HomePage(),
         '/anasayfa': (context) => HomePage(),
         '/girissayfasi': (context) => LoginPage(),
         '/notlar': (context) => Notlar(),
