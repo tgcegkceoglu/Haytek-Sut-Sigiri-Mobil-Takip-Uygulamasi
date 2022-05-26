@@ -3,10 +3,11 @@ Lisans Tezi Uygulama Projesi
 <p float="left">
   <img src="https://user-images.githubusercontent.com/74832430/170535516-f0b14a8a-3663-4ea0-808c-de4df0166911.png" width="300"/> 
   <img src="https://user-images.githubusercontent.com/74832430/170535511-be876067-2c02-4d88-aa27-12507e2601e6.png" width="300" />
-  <img src="https://user-images.githubusercontent.com/74832430/170535537-c3e94a2d-c2f9-4938-94cf-50263c98f316.png" width="300" />
- 
+   <br>
+    <img src="https://user-images.githubusercontent.com/74832430/170535537-c3e94a2d-c2f9-4938-94cf-50263c98f316.png" width="300" />
+     <img src="https://user-images.githubusercontent.com/74832430/170535544-8c080cb4-afc3-4efe-93d3-ff2acf0764b5.png" width="300" />   
   <br>
-   <img src="https://user-images.githubusercontent.com/74832430/170535544-8c080cb4-afc3-4efe-93d3-ff2acf0764b5.png" width="300" />   
+
   <img src="https://user-images.githubusercontent.com/74832430/170535560-7e6e7398-5f7e-4f8e-8836-dfb082770433.png" width="300"/> 
   <img src="https://user-images.githubusercontent.com/74832430/170535572-311ce27d-9d8a-441e-97de-50a9d3ebdc54.png" width="300" />
   <br>
