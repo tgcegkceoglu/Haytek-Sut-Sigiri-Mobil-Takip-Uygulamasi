@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +29,13 @@ TextEditingController _hastalikbitistarihi = TextEditingController();
 TextEditingController _hastaliknotbilgisi = TextEditingController();
 
 class _HastalikSayfasiState extends State<HastalikSayfasi> {
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    _hastalikverileri=[];
+    _hayvanverileri=[];
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,11 +135,41 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
                 ),
               ),
               Expanded(
-                child: StreamBuilder(
-                  stream: readTumHayvanlardeneme(),
+                child: FutureBuilder(
                   builder: _buildListView,
-                ),
-              )
+                  future: readTumHayvanlar(),
+                )
+              ),
+              Text("Stream Verileri"),
+               Expanded(
+                          child: StreamBuilder<List<HastalikEkleFirebase>>(
+                            stream: readTumHayvanlarstream(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return Text(
+                                    "Bir Hata Oluştu - ${snapshot.error}");
+                              } else if (snapshot.hasData) {
+                                final _hayvanlar = snapshot.data!;
+                                return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.height,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: _hayvanlar
+                                          .map(_buildhayvanlar)
+                                          .toList(),
+                                    ),
+                                  ),
+                                );
+                              } 
+                              else {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              }
+                            },
+                          ),
+                        )
+              
             ])));
   }
 
@@ -154,8 +189,7 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
   Widget _buildListTile(BuildContext context, int index) {
     return Bilgiler(
       deger: false,
-      resim:
-          "https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd",
+      resim:"https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd",
       icon: Icon(Icons.sick_rounded, color: Color(0xFF375BA3)),
       icerik: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -280,14 +314,7 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
     }
     return _hayvanverileri;
   }
-
-   Stream<List<HastalikEkleFirebase>> _readHayvanlarstream({ required Query<Map<String, dynamic>> sorgu }) {
-    return sorgu.snapshots().map(
-        (snapshot) => snapshot.docs
-            .map((doc) => HastalikEkleFirebase.fromJson(doc.data()))
-            .toList());   
-  }
-    Stream<List<HastalikEkleFirebase>> readTumHayvanlardeneme() async* {
+  Stream<List<HastalikEkleFirebase>> readTumHayvanlarstream() async* {
     Query<Map<String, dynamic>> sorgu = FirebaseFirestore.instance
         .collection('kullanicilar')
         .doc(_auth.currentUser!.uid)
@@ -306,14 +333,127 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
               .doc(dokuman.id)
               .collection('hastalik');
           if (sorgu1 != null) {
-            _readHayvanlarstream(sorgu: sorgu1);
-            
+            QuerySnapshot<Map<String, dynamic>> snapshot1 = await sorgu1.get();
+            if (snapshot1.docs.isNotEmpty) {
+              for (DocumentSnapshot<Map<String, dynamic>> dokuman1
+                  in snapshot1.docs) {
+                Map<String, dynamic>? hastalikMap = dokuman1.data();
+                hastalikMap?["id"] = dokuman1.id;
+                if (hastalikMap != null) {
+                  _readHayvanlarstream(sorgu1);
+                }
+              }
+            }
           }
         }
       }
     }
-   
   }
+
+
+   Stream<List<HastalikEkleFirebase>> _readHayvanlarstream(Query<Map<String, dynamic>> sorgu ) {
+    return sorgu.snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => HastalikEkleFirebase.fromJson(doc.data()))
+            .toList());   
+  }
+    Widget _buildhayvanlar(HastalikEkleFirebase hastalik) => Container(
+        margin: EdgeInsets.only(top: 14),
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient:
+              LinearGradient(colors: [Color(0xFF375BA3), Color(0xFF29E3D7)]),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 3,
+              blurRadius: 3,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircleAvatar(
+                radius: 30.0,
+                backgroundColor: Colors.white,
+                backgroundImage: NetworkImage(
+                        "https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd")),
+            Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Küpe Numarası",
+                          style: TextStyle(color: Color(0xFF2EFFF1)),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          hastalik.hayvanId,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "Hastalık İsmi",
+                          style: TextStyle(color: Color(0xFF2EFFF1)),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                           hastalik.hastalikismi,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.keyboard_double_arrow_right,
+                          color: Color(0xFF2EFFF1),
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            "Bilgileri Görüntüle",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          style: TextButton.styleFrom(
+                            minimumSize: Size.zero,
+                            padding: EdgeInsets.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        ),
+                        Icon(
+                          Icons.keyboard_double_arrow_left,
+                          color: Color(0xFF2EFFF1),
+                        ),
+                      ],
+                    ),
+                  ]),
+            ),
+          ],
+        ),
+      );
+
 
   Timer? _timer;
   void startTimer(String hinttext) {

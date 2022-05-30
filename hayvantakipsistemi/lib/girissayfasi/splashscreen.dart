@@ -68,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen> {
             () => Navigator.pushNamed(context, '/anasayfa'));
       } else {
         Timer(Duration(seconds: 1),
-            () => Navigator.pushNamed(context, '/girissayfasi'));
+            () => Navigator.pushNamed(context, '/girissayfasi',));
       }
     });
   }

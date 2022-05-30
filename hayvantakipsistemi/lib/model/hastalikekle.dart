@@ -40,7 +40,7 @@ var maskFormatter = MaskTextInputFormatter(
 class _HastalikEkleModalState extends State<HastalikEkleModal> {
   @override
   initState() {
-    readTumHayvanlar();
+    _readTumHayvanlar();
   }
 
   @override
@@ -527,7 +527,6 @@ class _HastalikEkleModalState extends State<HastalikEkleModal> {
         hayvanMap?["id"] = dokuman.id;
         if (hayvanMap != null) {
           HayvanEkleFirebase hayvan = HayvanEkleFirebase.fromJson(hayvanMap);
-          if (hayvan.hayvanId == _hayvanIdleri[snapshot.docs.length]) {
             String hayvanId = hayvan.hayvanId;
             final docUser = FirebaseFirestore.instance
                 .collection('kullanicilar')
@@ -546,7 +545,7 @@ class _HastalikEkleModalState extends State<HastalikEkleModal> {
                 hastalikbitis: hastalikbitis);
             await docUser.set(hastalik.toJson());
             
-          }
+          
         }
       }
     }
@@ -554,7 +553,7 @@ class _HastalikEkleModalState extends State<HastalikEkleModal> {
 
   List<String> _hayvanlarkupeno = [];
   List<String> _hayvanIdleri = [];
-  Future<List<dynamic>> readTumHayvanlar() async {
+  Future<List<dynamic>> _readTumHayvanlar() async {
     Query<Map<String, dynamic>> sorgu = FirebaseFirestore.instance
         .collection('kullanicilar')
         .doc(_auth.currentUser!.uid)

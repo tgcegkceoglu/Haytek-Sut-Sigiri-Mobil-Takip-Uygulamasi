@@ -13,7 +13,7 @@ class Hayvanlarim extends StatefulWidget {
 }
 
 bool _aramabool = false;
-bool? _hayvanvar;
+bool? _hayvanvar=true;
 FirebaseAuth _auth =FirebaseAuth.instance;
 class _HayvanlarimState extends State<Hayvanlarim> {
   final TextEditingController _arama = TextEditingController();
@@ -272,8 +272,7 @@ Future _hayvanvarSorgula() async {
                 backgroundColor: Colors.white,
                 backgroundImage: hayvan.resim != null
                     ? NetworkImage(hayvan.resim!)
-                    : NetworkImage(
-                        "https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd")),
+                    : NetworkImage("https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd")),
             Padding(
               padding: const EdgeInsets.only(left: 15),
               child: Column(
