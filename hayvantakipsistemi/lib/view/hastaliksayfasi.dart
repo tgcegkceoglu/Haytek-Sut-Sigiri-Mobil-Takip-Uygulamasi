@@ -3,16 +3,11 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hayvantakipsistemi/Firebase_VeriTabani/hayvanekle/hayvanekle.dart';
 import 'package:hayvantakipsistemi/Firebase_VeriTabani/notlar/hastalik.dart';
-import 'package:hayvantakipsistemi/model/asilamaekle.dart';
 import 'package:hayvantakipsistemi/model/bilgiler.dart';
 import 'package:hayvantakipsistemi/model/hastalikekle.dart';
-import 'package:hayvantakipsistemi/model/hayvanekle.dart';
 import 'package:hayvantakipsistemi/model/header.dart';
-import 'package:hayvantakipsistemi/model/veriler.dart';
-import 'package:hayvantakipsistemi/view/hayvanekle.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -25,7 +20,6 @@ class HastalikSayfasi extends StatefulWidget {
 
 List<HastalikEkleFirebase> _hastalikverileri = [];
 List<HayvanEkleFirebase> _hayvanverileri = [];
-List<String> _hayvanIdleri = [];
 FirebaseAuth _auth = FirebaseAuth.instance;
 final _dateFormat = DateFormat('dd/MM/yyyy');
 CalendarFormat _format = CalendarFormat.month;
@@ -36,11 +30,6 @@ TextEditingController _hastalikbitistarihi = TextEditingController();
 TextEditingController _hastaliknotbilgisi = TextEditingController();
 
 class _HastalikSayfasiState extends State<HastalikSayfasi> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    readTumHayvanlar();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,8 +130,8 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
                 ),
               ),
               Expanded(
-                child: FutureBuilder(
-                  future: readTumHayvanlar(),
+                child: StreamBuilder(
+                  stream: readTumHayvanlardeneme(),
                   builder: _buildListView,
                 ),
               )
@@ -154,7 +143,7 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
       children: [
         Expanded(
           child: ListView.builder(
-            itemCount: _hastalikverileri.length,
+            itemCount: _hayvanverileri.length,
             itemBuilder: _buildListTile,
           ),
         ),
@@ -165,9 +154,8 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
   Widget _buildListTile(BuildContext context, int index) {
     return Bilgiler(
       deger: false,
-      resim: _hayvanverileri[index].resim != null
-          ? _hayvanverileri[index].resim
-          : "https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd",
+      resim:
+          "https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd",
       icon: Icon(Icons.sick_rounded, color: Color(0xFF375BA3)),
       icerik: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -250,15 +238,16 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
       ),
     );
   }
+
   Future<List<dynamic>> readTumHayvanlar() async {
     Query<Map<String, dynamic>> sorgu = FirebaseFirestore.instance
         .collection('kullanicilar')
         .doc(_auth.currentUser!.uid)
         .collection('hayvanlar');
     QuerySnapshot<Map<String, dynamic>> snapshot = await sorgu.get();
-    if (snapshot.docs.isNotEmpty) {
+    if (snapshot.docs.isNotEmpty && sorgu != null) {
       for (DocumentSnapshot<Map<String, dynamic>> dokuman in snapshot.docs) {
-        print("1");
+
         Map<String, dynamic>? hayvanMap = dokuman.data();
         hayvanMap?["id"] = dokuman.id;
         if (hayvanMap != null) {
@@ -269,15 +258,12 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
               .doc(dokuman.id)
               .collection('hastalik');
           if (sorgu1 != null) {
-             _hayvanIdleri.add(dokuman.id);
             QuerySnapshot<Map<String, dynamic>> snapshot1 = await sorgu1.get();
             if (snapshot1.docs.isNotEmpty) {
               for (DocumentSnapshot<Map<String, dynamic>> dokuman1
                   in snapshot1.docs) {
-                    print(2);
                 Map<String, dynamic>? hastalikMap = dokuman1.data();
                 hastalikMap?["id"] = dokuman1.id;
-              
                 if (hastalikMap != null) {
                   HayvanEkleFirebase hayvan =
                       HayvanEkleFirebase.fromJson(hayvanMap);
@@ -292,7 +278,41 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
         }
       }
     }
-    return _hayvanIdleri;
+    return _hayvanverileri;
+  }
+
+   Stream<List<HastalikEkleFirebase>> _readHayvanlarstream({ required Query<Map<String, dynamic>> sorgu }) {
+    return sorgu.snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => HastalikEkleFirebase.fromJson(doc.data()))
+            .toList());   
+  }
+    Stream<List<HastalikEkleFirebase>> readTumHayvanlardeneme() async* {
+    Query<Map<String, dynamic>> sorgu = FirebaseFirestore.instance
+        .collection('kullanicilar')
+        .doc(_auth.currentUser!.uid)
+        .collection('hayvanlar');
+    QuerySnapshot<Map<String, dynamic>> snapshot = await sorgu.get();
+    if (snapshot.docs.isNotEmpty && sorgu != null) {
+      for (DocumentSnapshot<Map<String, dynamic>> dokuman in snapshot.docs) {
+
+        Map<String, dynamic>? hayvanMap = dokuman.data();
+        hayvanMap?["id"] = dokuman.id;
+        if (hayvanMap != null) {
+          Query<Map<String, dynamic>> sorgu1 = FirebaseFirestore.instance
+              .collection('kullanicilar')
+              .doc(_auth.currentUser!.uid)
+              .collection('hayvanlar')
+              .doc(dokuman.id)
+              .collection('hastalik');
+          if (sorgu1 != null) {
+            _readHayvanlarstream(sorgu: sorgu1);
+            
+          }
+        }
+      }
+    }
+   
   }
 
   Timer? _timer;
