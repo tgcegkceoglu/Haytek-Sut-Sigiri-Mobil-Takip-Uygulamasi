@@ -32,10 +32,11 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
   @override
   void initState() {
     // TODO: implement initState
-    _hastalikverileri=[];
-    _hayvanverileri=[];
+    _hastalikverileri = [];
+    _hayvanverileri = [];
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,41 +136,34 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
                 ),
               ),
               Expanded(
-                child: FutureBuilder(
-                  builder: _buildListView,
-                  future: readTumHayvanlar(),
-                )
-              ),
+                  child: FutureBuilder(
+                builder: _buildListView,
+                future: readTumHayvanlar(),
+              )),
               Text("Stream Verileri"),
-               Expanded(
-                          child: StreamBuilder<List<HastalikEkleFirebase>>(
-                            stream: readTumHayvanlarstream(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasError) {
-                                return Text(
-                                    "Bir Hata Oluştu - ${snapshot.error}");
-                              } else if (snapshot.hasData) {
-                                final _hayvanlar = snapshot.data!;
-                                return Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height,
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      children: _hayvanlar
-                                          .map(_buildhayvanlar)
-                                          .toList(),
-                                    ),
-                                  ),
-                                );
-                              } 
-                              else {
-                                return Center(
-                                    child: CircularProgressIndicator());
-                              }
-                            },
+              Expanded(
+                child: StreamBuilder<List<HastalikEkleFirebase>>(
+                  stream: readTumHayvanlarstream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text("Bir Hata Oluştu - ${snapshot.error}");
+                    } else if (snapshot.hasData) {
+                      final _hayvanlar = snapshot.data!;
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: _hayvanlar.map(_buildhayvanlar).toList(),
                           ),
-                        )
-              
+                        ),
+                      );
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  },
+                ),
+              ),
             ])));
   }
 
@@ -189,7 +183,8 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
   Widget _buildListTile(BuildContext context, int index) {
     return Bilgiler(
       deger: false,
-      resim:"https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd",
+      resim:
+          "https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd",
       icon: Icon(Icons.sick_rounded, color: Color(0xFF375BA3)),
       icerik: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -281,7 +276,6 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
     QuerySnapshot<Map<String, dynamic>> snapshot = await sorgu.get();
     if (snapshot.docs.isNotEmpty && sorgu != null) {
       for (DocumentSnapshot<Map<String, dynamic>> dokuman in snapshot.docs) {
-
         Map<String, dynamic>? hayvanMap = dokuman.data();
         hayvanMap?["id"] = dokuman.id;
         if (hayvanMap != null) {
@@ -314,6 +308,7 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
     }
     return _hayvanverileri;
   }
+
   Stream<List<HastalikEkleFirebase>> readTumHayvanlarstream() async* {
     Query<Map<String, dynamic>> sorgu = FirebaseFirestore.instance
         .collection('kullanicilar')
@@ -322,7 +317,6 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
     QuerySnapshot<Map<String, dynamic>> snapshot = await sorgu.get();
     if (snapshot.docs.isNotEmpty && sorgu != null) {
       for (DocumentSnapshot<Map<String, dynamic>> dokuman in snapshot.docs) {
-
         Map<String, dynamic>? hayvanMap = dokuman.data();
         hayvanMap?["id"] = dokuman.id;
         if (hayvanMap != null) {
@@ -340,7 +334,106 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
                 Map<String, dynamic>? hastalikMap = dokuman1.data();
                 hastalikMap?["id"] = dokuman1.id;
                 if (hastalikMap != null) {
-                  _readHayvanlarstream(sorgu1);
+                  HastalikEkleFirebase hastalik= HastalikEkleFirebase.fromJson(hastalikMap);
+                  Container(
+                    margin: EdgeInsets.only(top: 14),
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: [Color(0xFF375BA3), Color(0xFF29E3D7)]),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 3,
+                          blurRadius: 3,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                            radius: 30.0,
+                            backgroundColor: Colors.white,
+                            backgroundImage: NetworkImage(
+                                "https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd")),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Küpe Numarası",
+                                      style:
+                                          TextStyle(color: Color(0xFF2EFFF1)),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      hastalik.hayvanId,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Hastalık İsmi",
+                                      style:
+                                          TextStyle(color: Color(0xFF2EFFF1)),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      hastalik.hastalikismi,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.keyboard_double_arrow_right,
+                                      color: Color(0xFF2EFFF1),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {},
+                                      child: Text(
+                                        "Bilgileri Görüntüle",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      style: TextButton.styleFrom(
+                                        minimumSize: Size.zero,
+                                        padding: EdgeInsets.zero,
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.keyboard_double_arrow_left,
+                                      color: Color(0xFF2EFFF1),
+                                    ),
+                                  ],
+                                ),
+                              ]),
+                        ),
+                      ],
+                    ),
+                  );
                 }
               }
             }
@@ -350,14 +443,14 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
     }
   }
 
-
-   Stream<List<HastalikEkleFirebase>> _readHayvanlarstream(Query<Map<String, dynamic>> sorgu ) {
-    return sorgu.snapshots().map(
-        (snapshot) => snapshot.docs
-            .map((doc) => HastalikEkleFirebase.fromJson(doc.data()))
-            .toList());   
+  Stream<List<HastalikEkleFirebase>> _readHayvanlarstream(
+      Query<Map<String, dynamic>> sorgu) async* {
+    yield* sorgu.snapshots().map((snapshot) => snapshot.docs
+        .map((doc) => HastalikEkleFirebase.fromJson(doc.data()))
+        .toList());
   }
-    Widget _buildhayvanlar(HastalikEkleFirebase hastalik) => Container(
+
+  Widget _buildhayvanlar(HastalikEkleFirebase hastalik) => Container(
         margin: EdgeInsets.only(top: 14),
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -381,7 +474,7 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
                 radius: 30.0,
                 backgroundColor: Colors.white,
                 backgroundImage: NetworkImage(
-                        "https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd")),
+                    "https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd")),
             Padding(
               padding: const EdgeInsets.only(left: 15),
               child: Column(
@@ -416,7 +509,7 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
                           width: 5,
                         ),
                         Text(
-                           hastalik.hastalikismi,
+                          hastalik.hastalikismi,
                           style: TextStyle(color: Colors.white),
                         ),
                       ],
@@ -453,7 +546,6 @@ class _HastalikSayfasiState extends State<HastalikSayfasi> {
           ],
         ),
       );
-
 
   Timer? _timer;
   void startTimer(String hinttext) {

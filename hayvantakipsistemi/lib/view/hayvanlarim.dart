@@ -13,7 +13,7 @@ class Hayvanlarim extends StatefulWidget {
 }
 
 bool _aramabool = false;
-bool? _hayvanvar=true;
+bool? _hayvanvar;
 FirebaseAuth _auth =FirebaseAuth.instance;
 class _HayvanlarimState extends State<Hayvanlarim> {
   final TextEditingController _arama = TextEditingController();
