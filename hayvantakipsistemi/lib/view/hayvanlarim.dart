@@ -145,7 +145,6 @@ class _HayvanlarimState extends State<Hayvanlarim> {
                       ),
                     ),
                   ),
-                  _hayvanvar ==true ?
                   _aramabool == false ?  
                        Expanded(
                           child: StreamBuilder<List<HayvanEkleFirebase>>(
@@ -201,17 +200,7 @@ class _HayvanlarimState extends State<Hayvanlarim> {
                               }
                             },
                           ),
-                        ): Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: MediaQuery.of(context).size.height/5,),
-                            Image(image: AssetImage('assets/images/inek.png',),fit: BoxFit.cover,repeat: ImageRepeat.noRepeat,
-                            height: MediaQuery.of(context).size.height/10,
-                            ),
-                            Text("Herhangi Bir Hayvan Eklemediniz!",style: TextStyle(color: Color(0xFF375BA3)),),
-                          ],
-                        ),
+                        )
                 ],
               ),),
     );

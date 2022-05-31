@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hayvantakipsistemi/model/hastalikekle.dart';
+import 'package:hayvantakipsistemi/model/hastalikbilgileri/hastalikekle.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 

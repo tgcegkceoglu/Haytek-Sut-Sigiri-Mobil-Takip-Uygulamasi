@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hayvantakipsistemi/model/asilamaekle.dart';
 import 'package:hayvantakipsistemi/model/bilgiler.dart';
 import 'package:hayvantakipsistemi/model/floatingactionbutton.dart';
-import 'package:hayvantakipsistemi/model/hastalikekle.dart';
+import 'package:hayvantakipsistemi/model/hastalikbilgileri/hastalikekle.dart';
 import 'package:hayvantakipsistemi/model/header.dart';
 import 'package:hayvantakipsistemi/model/veriler.dart';
 import 'package:hayvantakipsistemi/view/asilamasayfasi.dart';

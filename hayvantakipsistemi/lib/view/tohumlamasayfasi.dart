@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hayvantakipsistemi/model/bilgiler.dart';
 import 'package:hayvantakipsistemi/model/bottomnavigatorbar.dart';
-import 'package:hayvantakipsistemi/model/hastalikekle.dart';
+import 'package:hayvantakipsistemi/model/hastalikbilgileri/hastalikekle.dart';
 import 'package:hayvantakipsistemi/model/header.dart';
 import 'package:hayvantakipsistemi/model/tohumlamaekle.dart';
 import 'package:hayvantakipsistemi/model/veriler.dart';

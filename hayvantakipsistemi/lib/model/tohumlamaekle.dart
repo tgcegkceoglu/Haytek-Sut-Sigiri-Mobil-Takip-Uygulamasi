@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hayvantakipsistemi/model/hastalikekle.dart';
+import 'package:hayvantakipsistemi/model/hastalikbilgileri/hastalikekle.dart';
 import 'package:hayvantakipsistemi/model/takvimicon.dart';
 import 'package:hayvantakipsistemi/model/textfieldarama.dart';
 import 'package:hayvantakipsistemi/model/veriler.dart';

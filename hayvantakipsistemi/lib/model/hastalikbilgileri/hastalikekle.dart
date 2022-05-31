@@ -5,8 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hayvantakipsistemi/Firebase_VeriTabani/hayvanekle/hayvanekle.dart';
 import 'package:hayvantakipsistemi/Firebase_VeriTabani/notlar/hastalik.dart';
+import 'package:hayvantakipsistemi/model/hastalikbilgileri/refreshHastalikSayfasi.dart';
 import 'package:hayvantakipsistemi/model/textfieldarama.dart';
 import 'package:hayvantakipsistemi/model/veriler.dart';
+import 'package:hayvantakipsistemi/view/hastaliksayfasi.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -42,6 +44,12 @@ class _HastalikEkleModalState extends State<HastalikEkleModal> {
   initState() {
     _readTumHayvanlar();
   }
+  @override
+  void dispose() {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HastalikSayfasi()),).then((res) => RefreshHastalik());
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +79,8 @@ class _HastalikEkleModalState extends State<HastalikEkleModal> {
                         .parse(_hastalikbitiscontroller.text),
                   );
                   _startTimer("Hastalık Eklendi!");
-                  
+                  Navigator.pop(context);
+                
                 },
                 child: Text(
                   "Hastalığı Ekle",
