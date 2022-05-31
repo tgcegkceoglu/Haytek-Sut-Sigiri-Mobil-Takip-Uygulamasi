@@ -41,14 +41,14 @@ var maskFormatter = MaskTextInputFormatter(
 
 class _HastalikEkleModalState extends State<HastalikEkleModal> {
   @override
-  initState() {
-    _readTumHayvanlar();
-  }
-  @override
   void dispose() {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => HastalikSayfasi()),).then((res) => RefreshHastalik());
     // TODO: implement dispose
     super.dispose();
+  }
+
+  @override
+  initState() {
+    _readTumHayvanlar();
   }
 
   @override
@@ -79,8 +79,9 @@ class _HastalikEkleModalState extends State<HastalikEkleModal> {
                         .parse(_hastalikbitiscontroller.text),
                   );
                   _startTimer("Hastalık Eklendi!");
-                  Navigator.pop(context);
-                
+                   Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => HastalikSayfasi()),).then((res) => RefreshHastalik());
+                 
                 },
                 child: Text(
                   "Hastalığı Ekle",
@@ -536,25 +537,23 @@ class _HastalikEkleModalState extends State<HastalikEkleModal> {
         hayvanMap?["id"] = dokuman.id;
         if (hayvanMap != null) {
           HayvanEkleFirebase hayvan = HayvanEkleFirebase.fromJson(hayvanMap);
-            String hayvanId = hayvan.hayvanId;
-            final docUser = FirebaseFirestore.instance
-                .collection('kullanicilar')
-                .doc(_auth.currentUser!.uid)
-                .collection('hayvanlar')
-                .doc(hayvanId)
-                .collection('hastalik')
-                .doc();
-            final hastalik = HastalikEkleFirebase(
-                hastaliknot:hastaliknot ,
-                hastalikId: docUser.id,
-                hayvanId: hayvanId,
-                hayvaninkupeno: hayvaninkupeno,
-                hastalikismi: hastalikismi,
-                hastalikbaslangic: hastalikbaslangic,
-                hastalikbitis: hastalikbitis);
-            await docUser.set(hastalik.toJson());
-            
-          
+          String hayvanId = hayvan.hayvanId;
+          final docUser = FirebaseFirestore.instance
+              .collection('kullanicilar')
+              .doc(_auth.currentUser!.uid)
+              .collection('hayvanlar')
+              .doc(hayvanId)
+              .collection('hastalik')
+              .doc();
+          final hastalik = HastalikEkleFirebase(
+              hastaliknot: hastaliknot,
+              hastalikId: docUser.id,
+              hayvanId: hayvanId,
+              hayvaninkupeno: hayvaninkupeno,
+              hastalikismi: hastalikismi,
+              hastalikbaslangic: hastalikbaslangic,
+              hastalikbitis: hastalikbitis);
+          await docUser.set(hastalik.toJson());
         }
       }
     }
@@ -579,12 +578,12 @@ class _HastalikEkleModalState extends State<HastalikEkleModal> {
           HayvanEkleFirebase hayvan = HayvanEkleFirebase.fromJson(hayvanMap);
           _hayvanlarkupeno.add(hayvan.hayvaninkupeno);
           _hayvanIdleri.add(hayvan.hayvanId);
-
         }
       }
     }
     return _hayvanlarkupeno;
   }
+
   Timer? _timer;
   void _startTimer(String hinttext) {
     int _start = 100;
@@ -641,9 +640,11 @@ class _HastalikEkleModalState extends State<HastalikEkleModal> {
             },
           );
         } else {
-          setState(() {
-            _start--;
-          });
+          if (mounted) {
+            setState(() {
+              _start--;
+            });
+          }
         }
       },
     );

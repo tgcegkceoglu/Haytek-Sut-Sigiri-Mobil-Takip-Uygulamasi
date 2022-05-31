@@ -17,6 +17,7 @@ List<HayvanEkleFirebase> _hayvanverileri = [];
 FirebaseAuth _auth = FirebaseAuth.instance;
 
 class _RefreshHastalikState extends State<RefreshHastalik> {
+  
   @override
   void initState() {
     // TODO: implement initState
