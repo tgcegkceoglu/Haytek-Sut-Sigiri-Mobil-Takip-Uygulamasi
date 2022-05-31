@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -523,6 +524,7 @@ class _HastalikEkleModalState extends State<HastalikEkleModal> {
   }
 
   Future createHastalik({
+     File? secilendosya,
     required String hayvaninkupeno,
     required String hastaliknot,
     required String hastalikismi,

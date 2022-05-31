@@ -15,7 +15,6 @@ class RefreshHastalik extends StatefulWidget {
 List<HastalikEkleFirebase> _hastalikverileri = [];
 List<HayvanEkleFirebase> _hayvanverileri = [];
 FirebaseAuth _auth = FirebaseAuth.instance;
-bool yuklemeTamamlandimi=false;
 class _RefreshHastalikState extends State<RefreshHastalik> {
   
   @override
@@ -63,14 +62,12 @@ class _RefreshHastalikState extends State<RefreshHastalik> {
                   hintText: "Hastalık Bilgisi Ara"),
             ),
           ),
-          yuklemeTamamlandimi==true ?
           Expanded(
               child: FutureBuilder(
+
             builder: _buildListView,
             future: readTumHayvanlar(),
-          )) : Center(
-            child: CircularProgressIndicator(),
-          ),
+          )) 
         ],
       ),
     );
@@ -94,7 +91,7 @@ Widget _buildListTile(BuildContext context, int index) {
  
   return Bilgiler(
     deger: false,
-    resim:
+    resim:_hayvanverileri[index].resim !=null ? _hayvanverileri[index].resim :
         "https://firebasestorage.googleapis.com/v0/b/hayvantakipsistemi1.appspot.com/o/hayvanlar%2Finek.png?alt=media&token=c7dfd97c-42b3-4211-a523-273667d398dd",
     icon: Icon(Icons.sick_rounded, color: Color(0xFF375BA3)),
     icerik: SingleChildScrollView(
@@ -210,6 +207,7 @@ Future<List<dynamic>> readTumHayvanlar() async {
                 HastalikEkleFirebase hastalik =
                     HastalikEkleFirebase.fromJson(hastalikMap);
                 _hastalikverileri.add(hastalik);
+
               }
             }
           }
