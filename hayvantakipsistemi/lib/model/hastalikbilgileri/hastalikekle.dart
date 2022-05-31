@@ -53,132 +53,434 @@ class _HastalikEkleModalState extends State<HastalikEkleModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: Padding(
-          padding:
-              const EdgeInsets.only(right: 16, left: 16, bottom: 16, top: 16),
-          child: Container(
-              padding: EdgeInsets.only(right: 35, left: 35),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                gradient: LinearGradient(
-                  colors: [Color(0xFF375BA3), Color(0xFF29E3D7)],
-                  begin: FractionalOffset.centerLeft,
-                  end: FractionalOffset.centerRight,
+    return WillPopScope(
+      onWillPop:()async{
+       return true;
+      },
+      child: Scaffold(
+        bottomNavigationBar: Padding(
+            padding:
+                const EdgeInsets.only(right: 16, left: 16, bottom: 16, top: 16),
+            child: Container(
+                padding: EdgeInsets.only(right: 35, left: 35),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF375BA3), Color(0xFF29E3D7)],
+                    begin: FractionalOffset.centerLeft,
+                    end: FractionalOffset.centerRight,
+                  ),
                 ),
-              ),
-              child: TextButton(
-                onPressed: () {
-                  createHastalik(
-                    hastaliknot: _hastaliknot.text,
-                    hayvaninkupeno: _hayvankupenocontroller.text,
-                    hastalikismi: _hastalikismicontroller.text,
-                    hastalikbaslangic: DateFormat(_dateFormat)
-                        .parse(_hastalikbaslangiccontroller.text),
-                    hastalikbitis: DateFormat(_dateFormat)
-                        .parse(_hastalikbitiscontroller.text),
-                  );
-                  _startTimer("Hastalık Eklendi!");
-                   Navigator.pop(context);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HastalikSayfasi()),).then((res) => RefreshHastalik());
-                 
-                },
-                child: Text(
-                  "Hastalığı Ekle",
-                  style: TextStyle(fontSize: 15, color: Colors.white),
+                child: TextButton(
+                  onPressed: () {
+                    createHastalik(
+                      hastaliknot: _hastaliknot.text,
+                      hayvaninkupeno: _hayvankupenocontroller.text,
+                      hastalikismi: _hastalikismicontroller.text,
+                      hastalikbaslangic: DateFormat(_dateFormat)
+                          .parse(_hastalikbaslangiccontroller.text),
+                      hastalikbitis: DateFormat(_dateFormat)
+                          .parse(_hastalikbitiscontroller.text),
+                    );
+                    _startTimer("Hastalık Eklendi!");
+                     Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => HastalikSayfasi()),).then((res) => RefreshHastalik());
+                   
+                  },
+                  child: Text(
+                    "Hastalığı Ekle",
+                    style: TextStyle(fontSize: 15, color: Colors.white),
+                  ),
+                ))),
+        body: ListView(
+          children: [
+            //Hayvanın Küpe Numarası Textfield
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SearchSelectPage(
+                      inputType: TextInputType.number,
+                      controller: _hayvankupenocontroller,
+                      hinttext: "Hayvanın Küpe Numarasını Seçiniz...",
+                      items: _hayvanlarkupeno,
+                      selectedItem: _hayvankupenocontroller.text,
+                      onSelection: (v) {
+                        _hayvankupenocontroller.text = v;
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                    width: 1,
+                    color: Color(0xFF375BA3),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 5,
+                      offset: Offset(0, 5),
+                    ),
+                  ],
                 ),
-              ))),
-      body: ListView(
-        children: [
-          //Hayvanın Küpe Numarası Textfield
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => SearchSelectPage(
-                    inputType: TextInputType.number,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: TextField(
+                    enabled: false,
                     controller: _hayvankupenocontroller,
-                    hinttext: "Hayvanın Küpe Numarasını Seçiniz...",
-                    items: _hayvanlarkupeno,
-                    selectedItem: _hayvankupenocontroller.text,
-                    onSelection: (v) {
-                      _hayvankupenocontroller.text = v;
-                      setState(() {});
-                    },
-                  ),
-                ),
-              );
-            },
-            child: Container(
-              margin: EdgeInsets.only(top: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(
-                  width: 1,
-                  color: Color(0xFF375BA3),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 5,
-                    offset: Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: TextField(
-                  enabled: false,
-                  controller: _hayvankupenocontroller,
-                  decoration: const InputDecoration(
-                    labelStyle: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    hintText: "Hayvanın Küpe Numarası",
-                    hintStyle: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                    suffixIcon: Padding(
-                      padding: EdgeInsets.only(left: 16),
-                      child: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        size: 30,
+                    decoration: const InputDecoration(
+                      labelStyle: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                         color: Colors.black,
+                      ),
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      hintText: "Hayvanın Küpe Numarası",
+                      hintStyle: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                      suffixIcon: Padding(
+                        padding: EdgeInsets.only(left: 16),
+                        child: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          size: 30,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => SearchSelectPage(
-                    inputType: TextInputType.text,
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SearchSelectPage(
+                      inputType: TextInputType.text,
+                      controller: _hastalikismicontroller,
+                      hinttext: "Hastalığın İsmini Giriniz...",
+                      items: veri.hastalikismi,
+                      selectedItem: _hastalikismicontroller.text,
+                      onSelection: (v) {
+                        _hastalikismicontroller.text = v;
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                    width: 1,
+                    color: Color(0xFF375BA3),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 5,
+                      offset: Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: TextField(
+                    enabled: false,
                     controller: _hastalikismicontroller,
-                    hinttext: "Hastalığın İsmini Giriniz...",
-                    items: veri.hastalikismi,
-                    selectedItem: _hastalikismicontroller.text,
-                    onSelection: (v) {
-                      _hastalikismicontroller.text = v;
-                      setState(() {});
-                    },
+                    decoration: const InputDecoration(
+                      labelStyle: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      hintText: "Hastalığı Seçiniz",
+                      hintStyle: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                      suffixIcon: Padding(
+                        padding: EdgeInsets.only(left: 16),
+                        child: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          size: 30,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              );
-            },
-            child: Container(
+              ),
+            ),
+            //hastalik başlangıç tarihi
+            Container(
+              margin: EdgeInsets.only(top: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  width: 1,
+                  color: Color(0xFF375BA3),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 5,
+                    offset: Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: TextField(
+                inputFormatters: [maskFormatter],
+                keyboardType: TextInputType.number,
+                controller: _hastalikbaslangiccontroller,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                      icon: Icon(
+                        Icons.calendar_month,
+                        color: Color(0xFF375BA3),
+                      ),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                child: Scaffold(
+                                  body: TableCalendar(
+                                    locale: 'tr_TR',
+                                    focusedDay: _focusedDay,
+                                    firstDay: DateTime(1990),
+                                    lastDay: DateTime.now()
+                                        .subtract(Duration(days: 0)),
+                                    calendarFormat: _format,
+                                    onFormatChanged: (CalendarFormat _format) {
+                                      setState(() {
+                                        _format =
+                                            _format; // Bugünün Tarihini Seçtirdik.
+                                      });
+                                    },
+                                    calendarStyle: CalendarStyle(
+                                        todayDecoration: BoxDecoration(
+                                          color:
+                                              Color.fromARGB(255, 123, 203, 198),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        isTodayHighlighted: true,
+                                        selectedDecoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Color(0xFF375BA3),
+                                              Color(0xFF29E3D7)
+                                            ],
+                                            begin: FractionalOffset.centerLeft,
+                                            end: FractionalOffset.centerRight,
+                                          ),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        selectedTextStyle:
+                                            TextStyle(color: Colors.white)),
+                                    daysOfWeekStyle: DaysOfWeekStyle(
+                                      weekendStyle:
+                                          TextStyle(color: Colors.black),
+                                      weekdayStyle:
+                                          TextStyle(color: Colors.black),
+                                    ),
+                                    headerStyle: HeaderStyle(
+                                      formatButtonVisible: true,
+                                      titleCentered: true,
+                                      formatButtonShowsNext: false,
+                                      formatButtonDecoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1, color: Color(0xFF375BA3)),
+                                        borderRadius: BorderRadius.circular(34),
+                                      ),
+                                    ),
+                                    selectedDayPredicate: (DateTime date) {
+                                      return isSameDay(_selectedDay, date);
+                                    },
+                                    startingDayOfWeek: StartingDayOfWeek.monday,
+                                    daysOfWeekVisible: true,
+                                    onDaySelected:
+                                        (DateTime selectDay, DateTime focusDay) {
+                                      setState(() {
+                                        _selectedDay = selectDay;
+                                        _focusedDay = focusDay;
+                                        _hastalikbaslangiccontroller.text =
+                                            DateFormat(_dateFormat)
+                                                .format(selectDay);
+                                        Navigator.pop(context);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                            });
+                      }),
+                  filled: true,
+                  fillColor: Colors.white,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  labelText: 'Hastalık Başlangıç Tarihi',
+                  hintStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  labelStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  width: 1,
+                  color: Color(0xFF375BA3),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 5,
+                    offset: Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: TextField(
+                inputFormatters: [maskFormatter],
+                keyboardType: TextInputType.number,
+                controller: _hastalikbitiscontroller,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                      icon: Icon(
+                        Icons.calendar_month,
+                        color: Color(0xFF375BA3),
+                      ),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                child: Scaffold(
+                                  body: TableCalendar(
+                                    locale: 'tr_TR',
+                                    focusedDay: _focusedDay,
+                                    firstDay: DateTime(1990),
+                                    lastDay: DateTime.now()
+                                        .subtract(Duration(days: 0)),
+                                    calendarFormat: _format,
+                                    onFormatChanged: (CalendarFormat _format) {
+                                      setState(() {
+                                        _format =
+                                            _format; // Bugünün Tarihini Seçtirdik.
+                                      });
+                                    },
+                                    calendarStyle: CalendarStyle(
+                                        todayDecoration: BoxDecoration(
+                                          color:
+                                              Color.fromARGB(255, 123, 203, 198),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        isTodayHighlighted: true,
+                                        selectedDecoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Color(0xFF375BA3),
+                                              Color(0xFF29E3D7)
+                                            ],
+                                            begin: FractionalOffset.centerLeft,
+                                            end: FractionalOffset.centerRight,
+                                          ),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        selectedTextStyle:
+                                            TextStyle(color: Colors.white)),
+                                    daysOfWeekStyle: DaysOfWeekStyle(
+                                      weekendStyle:
+                                          TextStyle(color: Colors.black),
+                                      weekdayStyle:
+                                          TextStyle(color: Colors.black),
+                                    ),
+                                    headerStyle: HeaderStyle(
+                                      formatButtonVisible: true,
+                                      titleCentered: true,
+                                      formatButtonShowsNext: false,
+                                      formatButtonDecoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1, color: Color(0xFF375BA3)),
+                                        borderRadius: BorderRadius.circular(34),
+                                      ),
+                                    ),
+                                    selectedDayPredicate: (DateTime date) {
+                                      return isSameDay(_selectedDay, date);
+                                    },
+                                    startingDayOfWeek: StartingDayOfWeek.monday,
+                                    daysOfWeekVisible: true,
+                                    onDaySelected:
+                                        (DateTime selectDay, DateTime focusDay) {
+                                      setState(() {
+                                        _selectedDay = selectDay;
+                                        _focusedDay = focusDay;
+                                        _hastalikbitiscontroller.text =
+                                            DateFormat(_dateFormat)
+                                                .format(selectDay);
+                                        Navigator.pop(context);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                            });
+                      }),
+                  filled: true,
+                  fillColor: Colors.white,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  labelText: 'Hastalık Bitiş Tarihi',
+                  hintStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  labelStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Container(
               margin: EdgeInsets.only(top: 16),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -196,323 +498,26 @@ class _HastalikEkleModalState extends State<HastalikEkleModal> {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.only(left: 16),
+                padding: const EdgeInsets.only(left: 8),
                 child: TextField(
-                  enabled: false,
-                  controller: _hastalikismicontroller,
+                  cursorColor: Color(0xFF375BA3),
+                  maxLines: 5,
+                  controller: _hastaliknot,
                   decoration: const InputDecoration(
-                    labelStyle: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    hintText: "Hastalığı Seçiniz",
-                    hintStyle: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                    suffixIcon: Padding(
-                      padding: EdgeInsets.only(left: 16),
-                      child: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        size: 30,
+                      labelStyle: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
-                    ),
-                  ),
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      labelText: "Eklemek İstediğiniz Not",
+                      alignLabelWithHint: true),
                 ),
               ),
             ),
-          ),
-          //hastalik başlangıç tarihi
-          Container(
-            margin: EdgeInsets.only(top: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(
-                width: 1,
-                color: Color(0xFF375BA3),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 5,
-                  offset: Offset(0, 5),
-                ),
-              ],
-            ),
-            child: TextField(
-              inputFormatters: [maskFormatter],
-              keyboardType: TextInputType.number,
-              controller: _hastalikbaslangiccontroller,
-              decoration: InputDecoration(
-                suffixIcon: IconButton(
-                    icon: Icon(
-                      Icons.calendar_month,
-                      color: Color(0xFF375BA3),
-                    ),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return Dialog(
-                              child: Scaffold(
-                                body: TableCalendar(
-                                  locale: 'tr_TR',
-                                  focusedDay: _focusedDay,
-                                  firstDay: DateTime(1990),
-                                  lastDay: DateTime.now()
-                                      .subtract(Duration(days: 0)),
-                                  calendarFormat: _format,
-                                  onFormatChanged: (CalendarFormat _format) {
-                                    setState(() {
-                                      _format =
-                                          _format; // Bugünün Tarihini Seçtirdik.
-                                    });
-                                  },
-                                  calendarStyle: CalendarStyle(
-                                      todayDecoration: BoxDecoration(
-                                        color:
-                                            Color.fromARGB(255, 123, 203, 198),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      isTodayHighlighted: true,
-                                      selectedDecoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Color(0xFF375BA3),
-                                            Color(0xFF29E3D7)
-                                          ],
-                                          begin: FractionalOffset.centerLeft,
-                                          end: FractionalOffset.centerRight,
-                                        ),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      selectedTextStyle:
-                                          TextStyle(color: Colors.white)),
-                                  daysOfWeekStyle: DaysOfWeekStyle(
-                                    weekendStyle:
-                                        TextStyle(color: Colors.black),
-                                    weekdayStyle:
-                                        TextStyle(color: Colors.black),
-                                  ),
-                                  headerStyle: HeaderStyle(
-                                    formatButtonVisible: true,
-                                    titleCentered: true,
-                                    formatButtonShowsNext: false,
-                                    formatButtonDecoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1, color: Color(0xFF375BA3)),
-                                      borderRadius: BorderRadius.circular(34),
-                                    ),
-                                  ),
-                                  selectedDayPredicate: (DateTime date) {
-                                    return isSameDay(_selectedDay, date);
-                                  },
-                                  startingDayOfWeek: StartingDayOfWeek.monday,
-                                  daysOfWeekVisible: true,
-                                  onDaySelected:
-                                      (DateTime selectDay, DateTime focusDay) {
-                                    setState(() {
-                                      _selectedDay = selectDay;
-                                      _focusedDay = focusDay;
-                                      _hastalikbaslangiccontroller.text =
-                                          DateFormat(_dateFormat)
-                                              .format(selectDay);
-                                      Navigator.pop(context);
-                                    });
-                                  },
-                                ),
-                              ),
-                            );
-                          });
-                    }),
-                filled: true,
-                fillColor: Colors.white,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                labelText: 'Hastalık Başlangıç Tarihi',
-                hintStyle: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-                labelStyle: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(
-                width: 1,
-                color: Color(0xFF375BA3),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 5,
-                  offset: Offset(0, 5),
-                ),
-              ],
-            ),
-            child: TextField(
-              inputFormatters: [maskFormatter],
-              keyboardType: TextInputType.number,
-              controller: _hastalikbitiscontroller,
-              decoration: InputDecoration(
-                suffixIcon: IconButton(
-                    icon: Icon(
-                      Icons.calendar_month,
-                      color: Color(0xFF375BA3),
-                    ),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return Dialog(
-                              child: Scaffold(
-                                body: TableCalendar(
-                                  locale: 'tr_TR',
-                                  focusedDay: _focusedDay,
-                                  firstDay: DateTime(1990),
-                                  lastDay: DateTime.now()
-                                      .subtract(Duration(days: 0)),
-                                  calendarFormat: _format,
-                                  onFormatChanged: (CalendarFormat _format) {
-                                    setState(() {
-                                      _format =
-                                          _format; // Bugünün Tarihini Seçtirdik.
-                                    });
-                                  },
-                                  calendarStyle: CalendarStyle(
-                                      todayDecoration: BoxDecoration(
-                                        color:
-                                            Color.fromARGB(255, 123, 203, 198),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      isTodayHighlighted: true,
-                                      selectedDecoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Color(0xFF375BA3),
-                                            Color(0xFF29E3D7)
-                                          ],
-                                          begin: FractionalOffset.centerLeft,
-                                          end: FractionalOffset.centerRight,
-                                        ),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      selectedTextStyle:
-                                          TextStyle(color: Colors.white)),
-                                  daysOfWeekStyle: DaysOfWeekStyle(
-                                    weekendStyle:
-                                        TextStyle(color: Colors.black),
-                                    weekdayStyle:
-                                        TextStyle(color: Colors.black),
-                                  ),
-                                  headerStyle: HeaderStyle(
-                                    formatButtonVisible: true,
-                                    titleCentered: true,
-                                    formatButtonShowsNext: false,
-                                    formatButtonDecoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1, color: Color(0xFF375BA3)),
-                                      borderRadius: BorderRadius.circular(34),
-                                    ),
-                                  ),
-                                  selectedDayPredicate: (DateTime date) {
-                                    return isSameDay(_selectedDay, date);
-                                  },
-                                  startingDayOfWeek: StartingDayOfWeek.monday,
-                                  daysOfWeekVisible: true,
-                                  onDaySelected:
-                                      (DateTime selectDay, DateTime focusDay) {
-                                    setState(() {
-                                      _selectedDay = selectDay;
-                                      _focusedDay = focusDay;
-                                      _hastalikbitiscontroller.text =
-                                          DateFormat(_dateFormat)
-                                              .format(selectDay);
-                                      Navigator.pop(context);
-                                    });
-                                  },
-                                ),
-                              ),
-                            );
-                          });
-                    }),
-                filled: true,
-                fillColor: Colors.white,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                labelText: 'Hastalık Bitiş Tarihi',
-                hintStyle: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-                labelStyle: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(
-                width: 1,
-                color: Color(0xFF375BA3),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 5,
-                  offset: Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: TextField(
-                cursorColor: Color(0xFF375BA3),
-                maxLines: 5,
-                controller: _hastaliknot,
-                decoration: const InputDecoration(
-                    labelStyle: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    labelText: "Eklemek İstediğiniz Not",
-                    alignLabelWithHint: true),
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

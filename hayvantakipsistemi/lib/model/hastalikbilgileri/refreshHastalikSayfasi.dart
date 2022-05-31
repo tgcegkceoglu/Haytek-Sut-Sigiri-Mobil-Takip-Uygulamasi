@@ -15,7 +15,7 @@ class RefreshHastalik extends StatefulWidget {
 List<HastalikEkleFirebase> _hastalikverileri = [];
 List<HayvanEkleFirebase> _hayvanverileri = [];
 FirebaseAuth _auth = FirebaseAuth.instance;
-
+bool yuklemeTamamlandimi=false;
 class _RefreshHastalikState extends State<RefreshHastalik> {
   
   @override
@@ -28,43 +28,51 @@ class _RefreshHastalikState extends State<RefreshHastalik> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(width: 2, color: Color(0xFFECECEC)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 3,
-                blurRadius: 3,
-                offset: Offset(0, 1),
-              ),
-            ],
-          ),
-          child: TextFormField(
-            cursorColor: Colors.black,
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(top: 15),
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Color(0xFF375BA3),
+    return WillPopScope(
+      onWillPop:()async{
+       return false;
+      },
+      child: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(width: 2, color: Color(0xFFECECEC)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 3,
+                  blurRadius: 3,
+                  offset: Offset(0, 1),
                 ),
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                hintText: "Hastalık Bilgisi Ara"),
+              ],
+            ),
+            child: TextFormField(
+              cursorColor: Colors.black,
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(top: 15),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Color(0xFF375BA3),
+                  ),
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  hintText: "Hastalık Bilgisi Ara"),
+            ),
           ),
-        ),
-        Expanded(
-            child: FutureBuilder(
-          builder: _buildListView,
-          future: readTumHayvanlar(),
-        )),
-      ],
+          yuklemeTamamlandimi==true ?
+          Expanded(
+              child: FutureBuilder(
+            builder: _buildListView,
+            future: readTumHayvanlar(),
+          )) : Center(
+            child: CircularProgressIndicator(),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -83,6 +91,7 @@ Widget _buildListView(BuildContext context, AsyncSnapshot<void> snapshot) {
 }
 
 Widget _buildListTile(BuildContext context, int index) {
+ 
   return Bilgiler(
     deger: false,
     resim:
